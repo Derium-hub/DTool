@@ -1,154 +1,64 @@
-import os
-import time
-import socket
-import requests
-import getpass
-from colorama import Fore, init
+import os import sys import time import requests import socket import validators import subprocess import qrcode import speedtest import json from pytube import YouTube from bs4 import BeautifulSoup from colorama import Fore, init from fake_useragent import UserAgent import instaloader from yt_dlp import YoutubeDL
 
-init()
+init(autoreset=True)
 
-R = Fore.RED
-G = Fore.GREEN
-B = Fore.BLUE
-C = Fore.CYAN
-W = Fore.WHITE
+PASSWORD = "Derium289" VERSION = "1.0.0"
 
-def login():
-    password_benar = "Derium289"
-    percobaan = 3
-    while percobaan > 0:
-        try:
-            pw = getpass.getpass("Masukkan password: ")
-        except Exception:
-            print(f"{R}Terminal tidak mendukung getpass. Gunakan input biasa.")
-            pw = input("Masukkan password: ")
-        if pw == password_benar:
-            print(f"{G}Akses diterima!\n")
-            time.sleep(1)
-            return True
-        else:
-            percobaan -= 1
-            print(f"{R}Password salah. Sisa percobaan: {percobaan}")
-    print(f"{R}Gagal login. Keluar...")
-    exit()
+def slow(text): for c in text: sys.stdout.write(c) sys.stdout.flush() time.sleep(0.01) print()
 
-def banner():
-    os.system("clear")
-    print(f"""{G}
-╔════════════════════════════╗
-║     {B}DTool Terminal Tool     {G}║
-╚════════════════════════════╝
-""")
+def login(): os.system("clear") print(Fore.CYAN + "LOGIN AKSES TOOL") import getpass pw = getpass.getpass("Masukkan password: ") if pw != PASSWORD: print(Fore.RED + "Password salah!") sys.exit() print(Fore.GREEN + "Login berhasil!") time.sleep(1)
 
-def cek_koneksi():
-    print(f"{C}Mengecek koneksi internet...")
-    try:
-        requests.get("https://www.google.com", timeout=5)
-        print(f"{G}Koneksi aktif!")
-    except:
-        print(f"{R}Tidak ada koneksi!")
+def banner(): os.system("clear") print(Fore.RED + "╔═╗╔═╗╔╦╗╔═╗╔╦╗╦╔═╗") print(Fore.GREEN + "║ ╦║╣  ║ ║ ║ ║ ║║  ") print(Fore.CYAN + "╚═╝╚═╝ ╩ ╚═╝ ╩ ╩╚═╝") print(Fore.YELLOW + f"Versi {VERSION}") print(Fore.YELLOW + "-"*35)
 
-def ping_website():
-    target = input(f"{G}Masukkan domain/IP: ")
-    print(f"{B}")
-    os.system(f"ping -c 4 {target}")
+def menu(): print(Fore.YELLOW + """ [1]  Cek IP & Lokasi [2]  Download TikTok [3]  Download YouTube [4]  Download Instagram Reel [5]  Download Facebook Video [6]  Download Twitter/X Video [7]  Screenshot Web Page [8]  Email Verifier [9]  Fake Identity Generator [10] DDoS Simulasi [11] WA Number Checker [12] Generate QR Code [13] Speed Test [00] Keluar """)
 
-def dns_lookup():
-    domain = input(f"{G}Masukkan domain: ")
-    try:
-        ip = socket.gethostbyname(domain)
-        print(f"{G}IP Address: {ip}")
-    except:
-        print(f"{R}Domain tidak ditemukan.")
+def cek_ip(): try: ip = requests.get("https://api.ipify.org").text info = requests.get(f"http://ip-api.com/json/{ip}").json() print(f"\nIP Anda: {ip}") print(f"Negara: {info['country']}") print(f"Kota: {info['city']}") print(f"ISP: {info['isp']}") except: print("Gagal mengambil data IP")
 
-def ip_tracker():
-    ip = input(f"{G}Masukkan IP Address: ")
-    try:
-        res = requests.get(f"http://ip-api.com/json/{ip}").json()
-        if res["status"] == "success":
-            print(f"{C}Negara   : {res['country']}")
-            print(f"{C}Kota     : {res['city']}")
-            print(f"{C}ISP      : {res['isp']}")
-            print(f"{C}Timezone : {res['timezone']}")
-        else:
-            print(f"{R}IP tidak valid.")
-    except:
-        print(f"{R}Gagal menghubungi API.")
+def tiktok_download(): url = input("Masukkan URL TikTok: ") try: opts = {'outtmpl': '%(title)s.%(ext)s'} with YoutubeDL(opts) as ydl: ydl.download([url]) except: print("Gagal download video TikTok")
 
-def youtube_download():
-    url = input(f"{G}Masukkan URL YouTube: ")
-    print(f"{B}Downloading...")
-    os.system(f"yt-dlp -f mp4 {url}")
+def youtube_download(): url = input("Masukkan URL YouTube: ") try: yt = YouTube(url) stream = yt.streams.get_highest_resolution() stream.download() print("Download selesai.") except: print("Gagal download video YouTube")
 
-def tiktok_download():
-    url = input(f"{G}Masukkan URL TikTok: ")
-    print(f"{B}Mendownload video TikTok...")
-    os.system(f"yt-dlp {url}")
+def insta_download(): url = input("Masukkan URL Instagram: ") try: loader = instaloader.Instaloader() loader.download_url(url, "insta_download.mp4") print("Download selesai.") except: print("Gagal download Instagram reel")
 
-def hack_simulasi():
-    target = input(f"{G}Masukkan target domain/IP: ")
-    print(f"{R}Scanning {target}...")
-    for i in range(1, 6):
-        print(f"{B}Scanning port {i*111}...")
-        time.sleep(0.5)
-    print(f"{G}Exploit berhasil ditemukan! (simulasi)")
+def facebook_download(): url = input("Masukkan URL Facebook: ") try: opts = {'outtmpl': '%(title)s.%(ext)s'} with YoutubeDL(opts) as ydl: ydl.download([url]) except: print("Gagal download video Facebook")
 
-def cek_balance_safelinku_api():
-    print(f"{B}Cek saldo SafelinkU...")
-    api_key = "da4ae834895612183fff0f17ade10311afa99c47"  # ← API KEY kamu
+def twitter_download(): url = input("Masukkan URL Twitter: ") try: opts = {'outtmpl': '%(title)s.%(ext)s'} with YoutubeDL(opts) as ydl: ydl.download([url]) except: print("Gagal download video Twitter/X")
 
-    try:
-        res = requests.get(f"https://api.safelinku.com/v1/user/info?api_token={api_key}")
-        data = res.json()
+def screenshot_web(): url = input("Masukkan URL: ") try: api = f"https://image.thum.io/get/fullpage/{url}" r = requests.get(api) with open("screenshot.jpg", "wb") as f: f.write(r.content) print("Screenshot berhasil disimpan.") except: print("Gagal mengambil screenshot.")
 
-        if "user" in data:
-            name = data["user"]["name"]
-            balance = data["user"]["balance"]
-            print(f"{G}Nama Pengguna: {name}")
-            print(f"{G}Saldo       : ${balance}")
-        else:
-            print(f"{R}Gagal mengambil data. Periksa API key!")
-    except Exception as e:
-        print(f"{R}Terjadi kesalahan: {e}")
+def email_verifier(): email = input("Masukkan alamat email: ") try: res = requests.get(f"https://api.eva.pingutil.com/email?email={email}") data = res.json() if data['data']['deliverable']: print("Email valid dan bisa dikirim.") else: print("Email tidak valid.") except: print("Gagal memverifikasi email.")
 
-def main():
-    login()
-    while True:
-        banner()
-        print(f"""{W}
-[1] Cek Koneksi Internet
-[2] Ping Website
-[3] DNS Lookup
-[4] IP Tracker
-[5] Download Video YouTube
-[6] Download TikTok
-[7] Hack Tool Simulasi
-[8] Cek Balance SafelinkU
-[0] Keluar
-""")
-        pilih = input(f"{G}Pilih menu: ")
-        if pilih == "1":
-            cek_koneksi()
-        elif pilih == "2":
-            ping_website()
-        elif pilih == "3":
-            dns_lookup()
-        elif pilih == "4":
-            ip_tracker()
-        elif pilih == "5":
-            youtube_download()
-        elif pilih == "6":
-            tiktok_download()
-        elif pilih == "7":
-            hack_simulasi()
-        elif pilih == "8":
-            cek_balance_safelinku_api()
-        elif pilih == "0":
-            print(f"{C}Keluar...")
-            break
-        else:
-            print(f"{R}Pilihan tidak valid.")
-        input(f"\n{C}Tekan Enter untuk kembali ke menu...")
+def fake_identity(): try: ua = UserAgent() r = requests.get("https://randomuser.me/api/", headers={'User-Agent': ua.random}) data = r.json()['results'][0] print(f"Nama: {data['name']['first']} {data['name']['last']}") print(f"Gender: {data['gender']}") print(f"Email: {data['email']}") print(f"Negara: {data['location']['country']}") except: print("Gagal mengambil identitas palsu")
 
-if __name__ == "__main__":
-    main()
+def ddos_simulasi(): target = input("Masukkan target (IP/domain): ") try: print(f"Mengirim paket simulasi ke {target}...") for i in range(10): print(f"Packet #{i+1} sent to {target}") time.sleep(0.5) print("Simulasi selesai.") except: print("Gagal melakukan simulasi DDoS")
+
+def wa_checker(): number = input("Masukkan nomor WA (62xxx): ") try: print(f"[!] Menyamar jadi WhatsApp...") res = requests.get(f"https://wa.me/{number}") if "Use WhatsApp" in res.text: print("Nomor WA aktif!") else: print("Tidak diketahui atau tidak aktif.") except: print("Gagal mengecek nomor WA.")
+
+def generate_qr(): text = input("Masukkan teks atau URL: ") img = qrcode.make(text) img.save("qrcode.png") print("QR Code berhasil disimpan.")
+
+def speed_test(): try: st = speedtest.Speedtest() print(f"Unduh: {round(st.download() / 1_000_000, 2)} Mbps") print(f"Unggah: {round(st.upload() / 1_000_000, 2)} Mbps") print(f"Ping: {st.results.ping} ms") except: print("Gagal menjalankan speedtest")
+
+def main(): login() while True: banner() menu() choice = input("Pilih menu: ")
+
+if choice == "1": cek_ip()
+    elif choice == "2": tiktok_download()
+    elif choice == "3": youtube_download()
+    elif choice == "4": insta_download()
+    elif choice == "5": facebook_download()
+    elif choice == "6": twitter_download()
+    elif choice == "7": screenshot_web()
+    elif choice == "8": email_verifier()
+    elif choice == "9": fake_identity()
+    elif choice == "10": ddos_simulasi()
+    elif choice == "11": wa_checker()
+    elif choice == "12": generate_qr()
+    elif choice == "13": speed_test()
+    elif choice == "00":
+        print("Keluar...")
+        break
+    else:
+        print("Pilihan tidak valid!")
+    input("\nTekan Enter untuk kembali ke menu...")
+
+if name == "main": main()
+
