@@ -1,1 +1,1 @@
-cryptography
+yt-dlp
